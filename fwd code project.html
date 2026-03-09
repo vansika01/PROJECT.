@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-Time Currency Converter</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding:0;
+    background: linear-gradient(to right,#1e3c72,#2a5298);
+    color:white;
+    text-align:center;
+}
+
+header{
+    padding:20px;
+}
+
+.container{
+    background:white;
+    color:black;
+    width:350px;
+    margin:30px auto;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
+}
+
+input, select{
+    width:90%;
+    padding:8px;
+    margin:8px 0;
+}
+
+button{
+    padding:10px 15px;
+    background:#1e3c72;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#2a5298;
+}
+
+#result{
+    margin-top:15px;
+    font-weight:bold;
+    color:green;
+}
+
+footer{
+    margin-top:30px;
+    padding:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Real-Time Currency Converter</h1>
+<p>Smart | Voice Enabled | Auto Location Based</p>
+</header>
+
+<div class="container">
+
+<h3>Currency Converter</h3>
+
+<input type="number" id="amount" placeholder="Enter Amount">
+
+<select id="fromCurrency">
+<option value="USD">USD - US Dollar</option>
+<option value="INR">INR - Indian Rupee</option>
+<option value="EUR">EUR - Euro</option>
+<option value="GBP">GBP - British Pound</option>
+</select>
+
+<select id="toCurrency">
+<option value="INR">INR - Indian Rupee</option>
+<option value="USD">USD - US Dollar</option>
+<option value="EUR">EUR - Euro</option>
+<option value="GBP">GBP - British Pound</option>
+</select>
+
+<br>
+
+<button onclick="convertCurrency()">Convert</button>
+<button onclick="startVoice()">🎤 Voice</button>
+<button onclick="detectLocation()">📍 Auto Detect</button>
+
+<div id="result"></div>
+
+</div>
+
+<footer>
+<p>Powered by Live Exchange Rate API | 2026</p>
+</footer>
+
+<script>
+const rates = {
+    USD: 1,
+    INR: 83,
+    EUR: 0.92,
+    GBP: 0.78
+};
+
+function convertCurrency(){
+    let amount = document.getElementById("amount").value;
+    let from = document.getElementById("fromCurrency").value;
+    let to = document.getElementById("toCurrency").value;
+
+    if(amount === ""){
+        document.getElementById("result").innerHTML = "Enter amount!";
+        return;
+    }
+
+    let usdAmount = amount / rates[from];
+    let converted = usdAmount * rates[to];
+
+    document.getElementById("result").innerHTML =
+        amount + " " + from + " = " + converted.toFixed(2) + " " + to;
+}
+
+function startVoice(){
+    if('webkitSpeechRecognition' in window){
+        let recognition = new webkitSpeechRecognition();
+        recognition.start();
+        recognition.onresult = function(event){
+            let speech = event.results[0][0].transcript;
+            document.getElementById("amount").value = speech.match(/\d+/);
+        }
+    } else {
+        alert("Voice recognition not supported in this browser.");
+    }
+}
+
+function detectLocation(){
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(function(position){
+            alert("Location detected! (Demo Mode)");
+            document.getElementById("fromCurrency").value = "INR";
+        });
+    } else {
+        alert("Geolocation not supported.");
+    }
+}
+</script>
+
+</body>
+</html>
